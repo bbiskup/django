@@ -70,8 +70,13 @@ class CachedFilesMixin(object):
         clean_name = parsed_name.path.strip()
         if content is None:
             if not self.exists(clean_name):
-                raise ValueError("The file '%s' could not be found with %r." %
-                                 (clean_name, self))
+                print "BB 20130206 fix for references to non-existing CSS"
+                print "  in jQuery DataTables"
+                print "e.g. src/PhenoSys/media/static/thirdparty/jquery-plugins/DataTables-1.9.1/media/css/demo_table_jui.cssself.background-image:"
+                print "   url('../images/back_disabled.jpg');"
+                print "######### IGNORING MISSING FILE %s" % clean_name 
+                #raise ValueError("The file '%s' could not be found with %r." %
+                #                 (clean_name, self))
             try:
                 content = self.open(clean_name)
             except IOError:
@@ -197,8 +202,10 @@ class CachedFilesMixin(object):
         matches = lambda path: matches_patterns(path, self._patterns.keys())
         adjustable_paths = [path for path in paths if matches(path)]
 
+
         # then sort the files by the directory level
         path_level = lambda name: len(name.split(os.sep))
+        
         for name in sorted(paths.keys(), key=path_level, reverse=True):
 
             # use the original, local file, not the copied-but-unprocessed
